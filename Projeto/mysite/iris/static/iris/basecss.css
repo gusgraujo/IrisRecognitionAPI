@@ -1,0 +1,57 @@
+
+* {box-sizing: border-box;}
+
+body { 
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+.escrita{
+  
+    position: fixed;
+    margin-top: 60px;
+    color: white;
+
+}
+
+.header{
+    
+    overflow: hidden;
+    background-color: #44a0f7;
+    padding: 20px 10px;
+
+}
+
+
+.sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 50;
+    left: 0;
+    background-color: rgb(41, 43, 71);
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffffff;
+    display: block;
+  }
+  
+  .sidenav a:hover {
+    color: #838383;
+  }
+  
+  .main {
+    margin-top: 50px;
+    margin-left: 160px; /* Same as the width of the sidenav */
+    font-size: 28px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+    align-content: center;
+  }
+
