@@ -10,14 +10,15 @@ body {
   
     position: fixed;
     margin-top: 60px;
-    color: white;
+    color: rgb(56, 55, 55);
+    font-size: 120px;
 
 }
 
 .header{
     
     overflow: hidden;
-    background-color: #44a0f7;
+    background-color: #e8eb52;
     padding: 20px 10px;
 
 }

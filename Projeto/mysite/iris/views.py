@@ -1,10 +1,13 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 import requests
 from .models import Iris
-from .form import LoginForm
+from .form import LoginForm,RegisterForm
 from rest_framework import routers, serializers, viewsets
 from .serializer import IrisSerializer
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+
 
 
 def home(request):
@@ -15,28 +18,103 @@ class IrisViewSet(viewsets.ModelViewSet):
     queryset = Iris.objects.all()
     serializer_class = IrisSerializer
 
+    @csrf_exempt
+    def iris_list(request):
+        """
+        List all code snippets, or create a new snippet.
+        """
+        if request.method == 'GET':
+            iris = Iris.objects.all()
+            serializer = IrisSerializer(iris, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+        elif request.method == 'POST':
+            data = JSONParser().parse(request)
+            serializer = IrisSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
+
+    @csrf_exempt
+    def iris_detail(request, pk):
+        """
+        Retrieve, update or delete a code snippet.
+        """
+        try:
+            iris = Iris.objects.get(pk=pk)
+        except Iris.DoesNotExist:
+            return HttpResponse(status=404)
+
+        if request.method == 'GET':
+            serializer = IrisSerializer(iris)
+            return JsonResponse(serializer.data)
+
+        elif request.method == 'PUT':
+            data = JSONParser().parse(request)
+            serializer = IrisSerializer(iris, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+            return JsonResponse(serializer.errors, status=400)
+
+        elif request.method == 'DELETE':
+            iris.delete()
+            return HttpResponse(status=204)
 
 
-def loginscreen(request):
+def loginScreen(request):
 
-    form = LoginForm(request.POST or None)
+        form = LoginForm(request.POST or None)
 
+        username= ''
+        password= ''
+        chave_privada=''
+        if request.method == 'POST':
+
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                chave_privada = form.cleaned_data['chave_privada']
+                
+            
+        context = {
+            'form':form,
+            'username':username,
+            'password':password,
+            'chave_privada':chave_privada
+            
+        }
+
+        print(username,password,chave_privada)
+
+        return render(request, 'Iris/login.html',context)
+
+
+def registerScreen(request):
+
+    form = RegisterForm(request.POST or None)
+
+    nome = ''
     username= ''
     password= ''
 
     if request.method == 'POST':
 
         if form.is_valid():
+            nome = form.cleaned_data['nome']
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
 
     context = {
         'form':form,
+        'nome':nome,
         'username':username,
         'password':password,
+
     }
 
 
-    return render(request, 'Iris/login.html',context)
+    return render(request, 'Iris/cadastro.html',context)
 

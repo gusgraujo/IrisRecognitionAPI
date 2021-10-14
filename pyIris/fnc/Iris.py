@@ -29,6 +29,9 @@ class Olho:
 
 def compararHd(info1,info2):
 
+    print(info1)
+    print(len(info1[0]))
+    print(info2)
     hd = fnc.matching.calHammingDist(info1[0],info1[1],info2[0],info2[1])
         
     print(hd)
