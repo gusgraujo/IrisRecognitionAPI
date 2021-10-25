@@ -8,10 +8,11 @@ from .serializer import IrisSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
-
+import numpy as np
 from ellipticcurve.ecdsa import Ecdsa
 from ellipticcurve.privateKey import PrivateKey
 
+from fnc.Iris import Olho
 
 
 def home(request):
@@ -22,7 +23,7 @@ class IrisViewSet(viewsets.ModelViewSet):
     queryset = Iris.objects.all()
     serializer_class = IrisSerializer
 
-    @api_view(['GET', 'POST'])
+    @api_view(['GET', 'POST','DELETE'])
     def iris_list(request):
         """
         List all code snippets, or create a new snippet.
@@ -38,19 +39,20 @@ class IrisViewSet(viewsets.ModelViewSet):
             privateKey = PrivateKey()
             publicKey = privateKey.publicKey()
 
-            message = "My test message"
-
-            # Generate Signature
-            signature = Ecdsa.sign(message, privateKey)
-
-            # To verify if the signature is valid
-            print(Ecdsa.verify(message, signature, publicKey))
-
             data['chave_privada'] = privateKey.toString()
             data['chave_publica'] = publicKey.toString()
 
-            serializer = IrisSerializer(data=data)
+            var_caminho = r"E:\TCCIRIS\Projeto\mysite\iris\image_iris\\" + data['upload']
+            olho_temp = Olho( var_caminho)
+            print(olho_temp.caminho)
+            iris_temp = olho_temp.extrairCodigo()
+            print(iris_temp)
+            data['iris_codep1'] = np.array_str(iris_temp[0])
+            data['iris_codep2'] = np.array_str(iris_temp[1])
 
+
+            serializer = IrisSerializer(data=data)
+    
             
             
 
@@ -58,6 +60,13 @@ class IrisViewSet(viewsets.ModelViewSet):
                 serializer.save()
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
+        elif request.method == 'DELETE':
+            
+            iris = Iris.objects.all().delete()
+            return HttpResponse(status=204)
+
+
+
 
     @api_view(['GET', 'PUT', 'DELETE'])
     def iris_detail(request, pk):
