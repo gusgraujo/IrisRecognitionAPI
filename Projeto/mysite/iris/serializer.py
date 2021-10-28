@@ -5,6 +5,6 @@ from iris.models import Iris
 class IrisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Iris
-        fields  = ['id','nome','usuario','password','data_registro']
+        fields  = ['id','nome','usuario','chave_privada','chave_publica','password','data_registro','upload','iris_codep1','iris_codep2']
 
 

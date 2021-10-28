@@ -12,7 +12,6 @@ class Olho:
     def __init__(self,caminho):
         print("Construir Objeto .. {}".format(self))
         self.caminho = caminho
-        
     
     def extrairCodigo(self,*args):
 
